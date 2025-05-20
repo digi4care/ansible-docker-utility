@@ -20,19 +20,19 @@ A lightweight Docker image containing Ansible and essential tools for infrastruc
 ### Pull from Docker Hub
 
 ```bash
-docker pull chrisengelharde/ansible-docker-utility:latest
+docker pull chrisengelhard/ansible-docker-utility:latest
 ```
 
 ### Run a one-off Ansible command
 
 ```bash
-docker run --rm -v $(pwd):/ansible -w /ansible chrisengelharde/ansible-docker-utility ansible --version
+docker run --rm -v $(pwd):/ansible -w /ansible chrisengelhard/ansible-docker-utility ansible --version
 ```
 
 ### Run a playbook
 
 ```bash
-docker run --rm -v $(pwd):/ansible -w /ansible chrisengelharde/ansible-docker-utility ansible-playbook site.yml
+docker run --rm -v $(pwd):/ansible -w /ansible chrisengelhard/ansible-docker-utility ansible-playbook site.yml
 ```
 
 ## Building Locally
@@ -52,17 +52,17 @@ docker run --rm -v $(pwd):/ansible -w /ansible chrisengelharde/ansible-docker-ut
 
 1. Log in to Docker Hub:
    ```bash
-   docker login --username=chrisengelharde
+   docker login --username=chrisengelhard
    ```
 
 2. Tag the image with your Docker Hub username:
    ```bash
-   docker tag ansible-docker-utility chrisengelharde/ansible-docker-utility:latest
+   docker tag ansible-docker-utility chrisengelhard/ansible-docker-utility:latest
    ```
 
 3. Push the image to Docker Hub:
    ```bash
-   docker push chrisengelharde/ansible-docker-utility:latest
+   docker push chrisengelhard/ansible-docker-utility:latest
    ```
 
 ## Using the Build Script
@@ -74,7 +74,7 @@ A convenience script is provided to build and optionally push the image:
 ./bin/build-and-push.sh -b
 
 # Build and push to Docker Hub
-./bin/build-and-push.sh -b -p -u chrisengelharde
+./bin/build-and-push.sh -b -p -u chrisengelhard
 
 # Show all options
 ./bin/build-and-push.sh --help
@@ -94,7 +94,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Author
 
 - [Your Name] - [Your Website]
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@digi4care](https://github.com/digi4care)
 
 ## Acknowledgments
 
