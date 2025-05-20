@@ -60,3 +60,4 @@ llm_txt.*
 
 pre_question_windsurf.md
 .qodo
+_build/

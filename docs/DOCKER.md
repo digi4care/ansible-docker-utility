@@ -1,12 +1,29 @@
-# Docker Setup for Ansible Server Monitoring
+# Docker Setup for Ansible
 
-This guide explains how to build, run, and deploy the Ansible Server Monitoring solution using Docker.
+This guide explains how to build, run, and deploy the Ansible Docker Utility images. Two variants are available:
+
+1. **Full Version**: Complete development environment with all tools
+2. **Slim Version**: Minimal image with just Ansible and essential dependencies
 
 ## Prerequisites
 
 - Docker Engine 20.10.0 or later
 - Docker Compose 2.0.0 or later
 - Access to a container registry (if pushing images)
+
+## Image Variants
+
+### Full Version (`Dockerfile`)
+- Complete development environment
+- Includes container runtimes (containerd, nerdctl, Podman)
+- Development tools and utilities
+- Larger image size (~1.5GB)
+
+### Slim Version (`Dockerfile.slim`)
+- Minimal production-ready image
+- Only essential dependencies
+- No container runtimes
+- Smaller image size (~500MB)
 
 ## Directory Structure
 
@@ -21,10 +38,28 @@ This guide explains how to build, run, and deploy the Ansible Server Monitoring 
 
 ## Quick Start
 
+### Full Version
+
 1. **Build the Docker image**:
    ```bash
-   cd docker
-   ./build-and-push.sh --name ansible-monitor --tag latest
+   ./build-and-push.sh --name ansible-utility --tag latest
+   ```
+   
+2. **Run the container**:
+   ```bash
+   docker run --rm -v $(pwd):/ansible ansible-utility:latest ansible --version
+   ```
+
+### Slim Version
+
+1. **Build the slim Docker image**:
+   ```bash
+   ./build-and-push.sh -f build/Dockerfile.slim --name ansible-utility --tag slim
+   ```
+   
+2. **Run the container**:
+   ```bash
+   docker run --rm -v $(pwd):/ansible ansible-utility:slim ansible --version
    ```
 
 2. **Run the container**:
@@ -53,37 +88,80 @@ This override file is automatically used by Docker Compose and is ignored by git
 - Mounting local directories for live code changes
 - Setting environment variables specific to your local environment
 
-## Building the Image
+## Building the Images
 
-The `build-and-push.sh` script provides several options:
+### Building a Specific Variant
+
+```bash
+# Build full version (default)
+./build-and-push.sh -t latest
+
+# Build slim version
+./build-and-push.sh -f build/Dockerfile.slim -t slim
+```
+
+## Build Script Reference
+
+The `build-and-push.sh` script simplifies image building and publishing:
+
+### Usage
 
 ```bash
 ./build-and-push.sh [options]
-
-Options:
-  -n, --name     Image name (default: ansible-docker-utility)
-  -t, --tag      Image tag (default: latest)
-  -r, --registry Registry URL (e.g., registry.example.com/username)
-  -p, --push     Push to registry after build
-  -s, --schedule Cron schedule (default: '0 3 * * *' - daily at 3 AM)
-  -h, --help     Show this help message
 ```
 
-### Examples
+### Options
 
-**Basic build with default settings:**
+| Option | Description |
+|--------|-------------|
+| `-f, --file` | Path to Dockerfile (default: build/Dockerfile) |
+| `-n, --name` | Image name (default: ansible-docker-utility) |
+| `-t, --tag` | Image tag (default: latest) |
+| `-r, --registry` | Registry URL (e.g., registry.example.com/username) |
+| `-p, --push` | Push to registry after build |
+| `--prune` | Prune Docker system before build |
+| `--no-cache` | Build without using cache |
+| `-h, --help` | Show help message |
+
+### Advanced Usage
+
 ```bash
-./build-and-push.sh
+# Build with custom Dockerfile and push to registry
+./build-and-push.sh -f build/Dockerfile.slim -t v1.0.0 -r myregistry -p
+
+# Build with no cache and system prune
+./build-and-push.sh --no-cache --prune
+
+# Multi-architecture build (experimental)
+./build-and-push.sh --platform linux/amd64,linux/arm64
 ```
 
-**Build with custom name and tag:**
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DOCKER_BUILDKIT` | `1` | Enable BuildKit |
+| `BUILDKIT_PROGRESS` | `plain` | Build output format |
+| `DOCKER_CLI_EXPERIMENTAL` | `enabled` | Enable experimental features |
+
+### Custom Build Hooks
+
+The script supports the following hooks if they exist in the project root:
+- `pre-build.sh`: Executed before the build starts
+- `post-build.sh`: Executed after successful build
+- `pre-push.sh`: Executed before pushing to registry
+- `post-push.sh`: Executed after successful push
+
+Example `pre-build.sh`:
 ```bash
-./build-and-push.sh --name my-ansible-monitor --tag v1.0
+#!/bin/bash
+echo "[$(date)] Starting build of $IMAGE_NAME:$TAG"
+# Run tests, linting, etc.
 ```
 
-**Build and push to private registry:**
+Make hooks executable:
 ```bash
-./build-and-push.sh --registry myregistry.example.com/username --push
+chmod +x pre-build.sh post-build.sh pre-push.sh post-push.sh
 ```
 
 ## Scheduled Execution with Host Crontab
