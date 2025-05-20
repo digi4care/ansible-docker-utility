@@ -11,6 +11,7 @@ _DATE="2025-05-08"
 # Default values
 IMAGE_NAME="ansible-docker-utility"
 TAG="latest"
+DOCKERFILE="Dockerfile"
 REGISTRY=""  # e.g., your-private-registry.example.com/digi4care
 PUSH=false
 SYSTEM_PRUNE=false
@@ -53,6 +54,7 @@ show_header() {
     printf -- "--- -b, --build             Build the Docker image (default: %s:%s)\n" "$IMAGE_NAME" "$TAG"
     printf -- "--- -n, --name              Image name (default: %s)\n" "$IMAGE_NAME"
     printf -- "--- -t, --tag               Image tag (default: %s)\n" "$TAG"
+    printf -- "--- -f, --file              Dockerfile to use (default: %s)\n" "$DOCKERFILE"
     printf -- "--- -r, --registry          Registry URL (e.g., registry.example.com/username)\n"
     printf -- "--- -p, --push              Push to registry after build\n"
     printf -- "--- -pr, --prune            Run both system and builder prune before building\n"
@@ -133,7 +135,12 @@ while [[ $# -gt 0 ]]; do
       START=true
       shift # past argument
       ;;
-      -h|--help)
+      -f|--file)
+      DOCKERFILE="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -h|--help)
       show_header "$TITLE" "$VERSION" "$IMAGE_NAME" "$TAG" "$AUTHOR" "$EMAIL" "$WEBSITE" "$COMPANY" "$0" true
       exit 0
       ;;
@@ -171,7 +178,7 @@ if [ "$START" = true ]; then
   # Check if image exists
   if ! docker image inspect "$IMAGE_NAME:$TAG" > /dev/null 2>&1; then
     echo "Image $IMAGE_NAME:$TAG not found. Building it first..."
-    if ! docker build $BUILD_OPTS -t "$IMAGE_NAME:$TAG" -f build/Dockerfile .; then
+    if ! docker build $BUILD_OPTS -t "$IMAGE_NAME:$TAG" -f "$DOCKERFILE" .; then
       echo "Error: Failed to build the image"
       exit 1
     fi
@@ -196,8 +203,8 @@ fi
 
 # Build the image
 if [ "$BUILD" = true ]; then
-  echo "Building Docker image: $IMAGE_NAME:$TAG"
-  if ! docker build $BUILD_OPTS -t "$IMAGE_NAME:$TAG" -f build/Dockerfile .; then
+  echo "Building Docker image: $IMAGE_NAME:$TAG from $DOCKERFILE"
+  if ! docker build $BUILD_OPTS -t "$IMAGE_NAME:$TAG" -f "$DOCKERFILE" .; then
     echo "Error: Failed to build the image"
     exit 1
   fi

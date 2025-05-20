@@ -1,5 +1,5 @@
 # Builder stage
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -93,8 +93,8 @@ ENV CONTAINERD_NAMESPACE=default \
     CONTAINERD_ADDRESS=unix:///run/containerd/containerd.sock \
     # Ansible settings
     ANSIBLE_FORCE_COLOR=1 \
-    ANSIBLE_HOST_KEY_CHECKING=False \
     ANSIBLE_SSH_RETRIES=3 \
+    ANSIBLE_HOST_KEY_CHECKING=${ANSIBLE_HOST_KEY_CHECKING:-False} \
     ANSIBLE_SSH_RETRY_DELAY=5 \
     # Python settings
     PYTHONUNBUFFERED=1 \

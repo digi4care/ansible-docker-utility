@@ -74,6 +74,7 @@ The `build-and-push.sh` script is a powerful utility designed to simplify the pr
 |--------|-------------|
 | `-n, --name <name>` | Image name (default: ansible-docker-utility) |
 | `-t, --tag <tag>` | Image tag (default: latest) |
+| `-f, --file <file>` | Dockerfile to use (default: Dockerfile) |
 | `-r, --registry <url>` | Registry URL (e.g., registry.example.com/username) |
 | `-p, --push` | Push to registry after build |
 | `-b, --build` | Build the Docker image |
