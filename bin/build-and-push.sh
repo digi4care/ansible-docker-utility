@@ -11,7 +11,7 @@ _DATE="2025-05-08"
 # Default values
 IMAGE_NAME="ansible-docker-utility"
 TAG="latest"
-DOCKERFILE="Dockerfile"
+DOCKERFILE="build/Dockerfile"
 REGISTRY=""  # e.g., your-private-registry.example.com/digi4care
 PUSH=false
 SYSTEM_PRUNE=false
