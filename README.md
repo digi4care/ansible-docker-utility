@@ -52,8 +52,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-- [Your Name] - [Your Website]
-- GitHub: [@digi4care](https://github.com/digi4care)
+- [Chris Engelhard](https://chrisengelhard.nl) - [Your Website]
+- GitHub: [@digi4care](https://github.com/digi4care/ansible-docker-utility)
 
 ## Acknowledgments
 
