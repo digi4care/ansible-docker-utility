@@ -1,6 +1,6 @@
 services:
   ansible:
-    image: ansible-docker-utility:latest
+    image: ansible-docker-utility:slim
     container_name: ansible-docker-utility
     environment:
       - TZ=${TZ:-Europe/Amsterdam}
