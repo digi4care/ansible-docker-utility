@@ -1,0 +1,11 @@
+services:
+  ansible:
+    image: ansible-docker-utility:latest
+    container_name: ansible-docker-utility
+    environment:
+      - TZ=${TZ:-Europe/Amsterdam}
+    volumes:
+      - .:/ansible
+    working_dir: /ansible
+    # Keep the container running
+    command: tail -f /dev/null

@@ -1,0 +1,92 @@
+# Ansible Docker Utility Image Workflows
+
+workflows:
+  # Image build workflow
+  build_image:
+    steps:
+      - name: "Build multi-stage Docker image"
+        command: |
+          docker build -t ansible-docker-utility:latest -f docker/Dockerfile .
+        validation:
+          - dockerfile_exists: "docker/Dockerfile"
+          - requirements_checked: "requirements.txt"
+
+      - name: "Verify Ansible installation"
+        command: |
+          docker run --rm ansible-docker-utility:latest ansible --version && \
+          docker run --rm ansible-docker-utility:latest ansible-playbook --version
+
+      - name: "Test SSH client and Git"
+        command: |
+          docker run --rm ansible-docker-utility:latest ssh -V && \
+          docker run --rm ansible-docker-utility:latest git --version
+
+  # Development workflow
+  development:
+    steps:
+      - name: "Start development container"
+        command: |
+          docker run -it --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            /bin/bash
+
+  # Test workflow
+  test:
+    steps:
+      - name: "Run Ansible syntax check"
+        command: |
+          docker run --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            ansible-playbook --syntax-check site.yml
+
+      - name: "Run Ansible lint"
+        command: |
+          docker run --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            ansible-lint
+
+  # Utility commands workflow
+  utils:
+    commands:
+      ansible:
+        description: "Run ansible commands"
+        example: |
+          docker run --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            ansible [options]
+
+      ansible-playbook:
+        description: "Run ansible-playbook commands"
+        example: |
+          docker run --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            ansible-playbook [options] site.yml
+
+      ansible-galaxy:
+        description: "Manage Ansible roles"
+        example: |
+          docker run --rm \
+            -v $(pwd):/ansible \
+            -w /ansible \
+            ansible-docker-utility:latest \
+            ansible-galaxy install role_name
+
+  # Documentation workflow
+  documentation:
+    triggers:
+      - image_update
+      - new_utility_added
+    steps:
+      - update_readme
+      - validate_examples
+      - generate_usage_examples
