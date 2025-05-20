@@ -20,12 +20,12 @@ This guide explains how to use the Ansible Docker Utility, which provides contai
 
 #### Full Version
 ```bash
-docker run --rm -v $(pwd):/ansible ansible-utility:latest ansible --version
+docker run --rm -v $(pwd):/ansible ansible-docker-utility:latest ansible --version
 ```
 
 #### Slim Version
 ```bash
-docker run --rm -v $(pwd):/ansible ansible-utility:slim ansible --version
+docker run --rm -v $(pwd):/ansible ansible-docker-utility:slim ansible --version
 ```
 
 ### Local Development
@@ -35,7 +35,7 @@ Create a `docker-compose.override.yml` to customize your development environment
 ```yaml
 services:
   ansible:
-    image: ansible-utility:latest
+    image: ansible-docker-utility:latest
     volumes:
       - .:/ansible
     environment:
